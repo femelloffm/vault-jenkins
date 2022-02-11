@@ -1,0 +1,27 @@
+---
+- name: Ensure required packages are installed
+  apt:
+    pkg:
+      - ca-certificates
+      - gnupg
+      - apt-transport-https
+    state: latest
+- name: Add Hashicorp repository key
+  apt_key:
+    url: https://apt.releases.hashicorp.com/gpg
+    state: present
+- name: Add Hashicorp repository
+  apt_repository:
+    repo: "deb [arch=amd64] https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main"
+    state: present
+- name: Install Vault
+  apt:
+    name: vault
+    state: latest
+    update_cache: yes
+- name: Enable Vault service
+  service:
+    name: vault
+    state: started
+    enabled: yes
+  when: not is_docker_container.stat.exists

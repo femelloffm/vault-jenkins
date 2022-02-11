@@ -1,0 +1,14 @@
+---
+- name: Create Vault group
+  group:
+    name: "{{ vault_group }}"
+    system: yes
+    state: present
+
+- name: Create Vault user
+  user:
+    name: "{{ vault_user }}"
+    system: yes
+    createhome: no
+    group: "{{ vault_group }}"
+    state: present

@@ -1,0 +1,20 @@
+---
+- name: Ensure required packages are installed
+  dnf:
+    name: dnf-plugins-core
+    state: latest
+- name: Add Hashicorp repository
+  shell: dnf config-manager --add-repo https://rpm.releases.hashicorp.com/fedora/hashicorp.repo
+  args:
+    creates: /etc/yum.repos.d/hashicorp.repo
+- name: Install Vault
+  dnf:
+    name: vault
+    state: latest
+    update_cache: yes
+- name: Enable Vault service
+  service:
+    name: vault
+    state: started
+    enabled: yes
+  when: not is_docker_container.stat.exists

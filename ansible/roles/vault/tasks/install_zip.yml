@@ -1,0 +1,16 @@
+---
+- name: Create group and user for Vault
+  include_tasks: create_user.yml
+- name: Ensure required packages are installled
+  package:
+    name: unzip
+    state: present
+- name: Download Vault zip
+  unarchive:
+    src: "https://releases.hashicorp.com/vault/{{ vault_version }}/vault_{{ vault_version }}_linux_amd64.zip"
+    dest: "{{ vault_install_path }}"
+    remote_src: yes
+    owner: "{{ vault_user }}"
+    group: "{{ vault_group }}"
+    creates: "{{ vault_install_path }}/vault"
+  register: download_from_zip

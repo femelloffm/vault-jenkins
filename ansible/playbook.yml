@@ -1,0 +1,5 @@
+- name: Provision Vault
+  hosts: all
+  become: true
+  roles:
+    - vault

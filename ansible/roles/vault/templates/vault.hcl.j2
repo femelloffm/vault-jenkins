@@ -1,0 +1,15 @@
+storage "raft" {
+  path    = "{{ vault_storage_path }}"
+  node_id = "{{ raft_node_id }}"
+}
+
+listener "tcp" {
+  address     = "0.0.0.0:8200"
+  tls_disable = "true"
+}
+
+disable_mlock = true
+
+api_addr = "{{ vault_api_addr }}"
+cluster_addr = "{{ vault_cluster_addr }}"
+ui = true

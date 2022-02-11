@@ -1,0 +1,37 @@
+---
+- name: Check if host is Docker container
+  stat:
+    path: /.dockerenv
+  register: is_docker_container
+
+- name: Install Vault
+  include_tasks: "{{ item }}"
+  with_first_found:
+    - "install_{{ ansible_distribution }}.yml"
+    - "install_{{ ansible_os_family }}.yml"
+    - install_zip.yml
+
+- name: Create directory for Vault storage
+  file:
+    path: "{{ vault_storage_path }}"
+    state: directory
+    owner: "{{ vault_user }}"
+    group: "{{ vault_group }}"
+- name: Create directory for Vault config
+  file:
+    path: "{{ vault_config_path }}"
+    state: directory
+    owner: "{{ vault_user }}"
+    group: "{{ vault_group }}"
+- name: Ensure Vault is configured
+  template:
+    src: vault.hcl.j2
+    dest: "{{ vault_config_path }}/vault.hcl"
+  notify: Restart Vault
+
+- name: Export VAULT_ADDR variable
+  ansible.builtin.lineinfile:
+    regexp: "^export VAULT_ADDR="
+    path: /etc/profile.d/vault.sh
+    create: yes
+    line: "export VAULT_ADDR={{ vault_api_addr }}"

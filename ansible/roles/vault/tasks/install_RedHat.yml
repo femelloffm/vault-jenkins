@@ -1,0 +1,26 @@
+---
+- name: Ensure required packages are installed
+  yum:
+    name: yum-utils
+    state: latest
+- name: Add Hashicorp repository (CentOS or RHEL)
+  shell: yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+  args:
+    creates: /etc/yum.repos.d/hashicorp.repo
+  when: ansible_distribution == "CentOS" or ansible_distribution == "RedHat"
+- name: Add Hashicorp repository (Amazon Linux)
+  shell: yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
+  args:
+    creates: /etc/yum.repos.d/hashicorp.repo
+  when: ansible_distribution == "Amazon"
+- name: Install Vault
+  yum:
+    name: vault
+    state: latest
+    update_cache: yes
+- name: Enable Vault service
+  service:
+    name: vault
+    state: started
+    enabled: yes
+  when: not is_docker_container.stat.exists

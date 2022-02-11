@@ -1,0 +1,8 @@
+---
+- name: Restart Vault
+  service:
+    name: vault
+    state: restarted
+  when: |
+    not is_docker_container.stat.exists and 
+    not download_from_zip.stat.exists

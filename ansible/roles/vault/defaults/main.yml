@@ -1,0 +1,13 @@
+vault_version: 1.9.3
+
+vault_install_path: /usr/local/bin
+vault_storage_path: /var/lib/vault
+vault_config_path: /etc/vault.d
+
+vault_group: vault
+vault_user: vault
+
+vault_api_addr: http://127.0.0.1:8200
+vault_cluster_addr: http://127.0.0.1:8201
+
+raft_node_id: raft_node1
